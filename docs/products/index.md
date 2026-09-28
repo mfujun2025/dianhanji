@@ -8,31 +8,31 @@
 
 <div class="dhj-cards">
 
-<a class="dhj-card" href="/products/mma-inverter">
+<a class="dhj-card" href="@BASE@/products/mma-inverter">
   <p class="t">逆变直流手工焊机</p>
   <p class="d">通用型首选。逆变技术、重量轻、电弧稳定，适配酸性/碱性焊条，覆盖钢结构、管道、维修等主流场景。</p>
   <p class="m">输出电流 120–500A →</p>
 </a>
 
-<a class="dhj-card" href="/products/mig-mag">
+<a class="dhj-card" href="@BASE@/products/mig-mag">
   <p class="t">二氧化碳气保焊机（MIG/MAG）</p>
   <p class="d">效率优先型。连续送丝、熔敷率高，适合中厚板批量焊接与加工厂流水作业。</p>
   <p class="m">输出电流 200–500A →</p>
 </a>
 
-<a class="dhj-card" href="/products/tig">
+<a class="dhj-card" href="@BASE@/products/tig">
   <p class="t">氩弧焊机（TIG）</p>
   <p class="d">品质优先型。氩气保护、热输入精确可控，焊缝成型美观，适合不锈钢、铝及薄板打底焊。</p>
   <p class="m">输出电流 160–400A →</p>
 </a>
 
-<a class="dhj-card" href="/products/plasma-cutter">
+<a class="dhj-card" href="@BASE@/products/plasma-cutter">
   <p class="t">等离子切割机</p>
   <p class="d">下料配套型。切割碳钢、不锈钢、铝板，与焊机形成完整的下料—成型—焊接链条。</p>
   <p class="m">切割厚度 10–60mm →</p>
 </a>
 
-<a class="dhj-card" href="/products/portable">
+<a class="dhj-card" href="@BASE@/products/portable">
   <p class="t">便携式家用焊机</p>
   <p class="d">轻量入门型。220V 单相供电，整机重量多在 5kg 以内，适合家庭维修、装潢、农具修补。</p>
   <p class="m">输出电流 100–200A →</p>

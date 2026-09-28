@@ -21,13 +21,13 @@
 
 <div class="dhj-cards">
 
-<a class="dhj-card" href="/articles/how-to-choose-welder">
+<a class="dhj-card" href="@BASE@/articles/how-to-choose-welder">
   <p class="t">电焊机怎么选？按板厚、材质、供电三步定机型</p>
   <p class="d">从母材与板厚到工艺与机型的完整决策路径，含四类工艺对比表与供电核对清单。</p>
   <p class="m">2026-09-28 · 选型与参数 · 约 1735 字 →</p>
 </a>
 
-<a class="dhj-card" href="/articles/welder-parameters">
+<a class="dhj-card" href="@BASE@/articles/welder-parameters">
   <p class="t">电焊机参数怎么看？额定电流、负载持续率、空载电压详解</p>
   <p class="d">解释参数表里最容易看错的三个指标，说清「虚标电流」为什么普遍存在。</p>
   <p class="m">2026-09-28 · 选型与参数 · 约 1796 字 →</p>
@@ -41,7 +41,7 @@
 
 <div class="dhj-cards">
 
-<a class="dhj-card" href="/articles/weld-defects">
+<a class="dhj-card" href="@BASE@/articles/weld-defects">
   <p class="t">常见焊接缺陷有哪些？气孔、飞溅、咬边的成因与对策</p>
   <p class="d">把车间最常见的 6 类焊接缺陷逐条拆开：现象、原因、当场怎么调、怎么预防。</p>
   <p class="m">2026-09-28 · 焊接工艺 · 约 1709 字 →</p>
@@ -55,7 +55,7 @@
 
 <div class="dhj-cards">
 
-<a class="dhj-card" href="/articles/maintenance-guide">
+<a class="dhj-card" href="@BASE@/articles/maintenance-guide">
   <p class="t">电焊机保养周期表：多久清灰、多久查线、多久通电驱潮</p>
   <p class="d">按班次/每周/每月/每季度列清保养项，附长期停用设备与粉尘环境的处理办法。</p>
   <p class="m">2026-09-28 · 使用与维护 · 约 1721 字 →</p>
@@ -69,7 +69,7 @@
 
 <div class="dhj-cards">
 
-<a class="dhj-card" href="/articles/inverter-trend">
+<a class="dhj-card" href="@BASE@/articles/inverter-trend">
   <p class="t">逆变焊机为什么取代了老式焊机？技术原理与选型影响</p>
   <p class="d">从工频到高频的技术路径讲清逆变优势，以及它对采购决策的实际影响。</p>
   <p class="m">2026-09-28 · 行业动态 · 约 1789 字 →</p>

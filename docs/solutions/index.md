@@ -6,25 +6,25 @@
 
 <div class="dhj-cards">
 
-<a class="dhj-card" href="/solutions/steel-structure">
+<a class="dhj-card" href="@BASE@/solutions/steel-structure">
   <p class="t">钢结构加工厂焊接方案</p>
   <p class="d">H 型钢、檩条、支架的批量焊接。以气保焊为主力、手工焊补位，兼顾效率与现场适应性。</p>
   <p class="m">查看方案 →</p>
 </a>
 
-<a class="dhj-card" href="/solutions/pressure-vessel">
+<a class="dhj-card" href="@BASE@/solutions/pressure-vessel">
   <p class="t">压力容器与管道焊接方案</p>
   <p class="d">质量优先场景。TIG 打底 + 气保焊填充盖面，重点在工艺评定、层间温度与无损检测配合。</p>
   <p class="m">查看方案 →</p>
 </a>
 
-<a class="dhj-card" href="/solutions/auto-repair">
+<a class="dhj-card" href="@BASE@/solutions/auto-repair">
   <p class="t">汽车维修改装焊接方案</p>
   <p class="d">薄板车身与结构件并重。需要低热输入控制变形，多用气保焊配细焊丝，辅以手工焊修结构件。</p>
   <p class="m">查看方案 →</p>
 </a>
 
-<a class="dhj-card" href="/solutions/decoration">
+<a class="dhj-card" href="@BASE@/solutions/decoration">
   <p class="t">装修与门窗加工焊接方案</p>
   <p class="d">不锈钢与铝合金门窗为主。TIG 保证外观成型，配合切割设备完成下料，形成小作坊完整链条。</p>
   <p class="m">查看方案 →</p>

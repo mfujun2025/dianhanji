@@ -41,37 +41,37 @@ features:
 
 <div class="dhj-cards">
 
-<a class="dhj-card" href="/products/mma-inverter">
+<a class="dhj-card" href="@BASE@/products/mma-inverter">
   <p class="t">逆变直流手工焊机</p>
   <p class="d">最通用的机型，适合钢结构、管道、维修等场景，可用酸性焊条、碱性焊条。</p>
   <p class="m">查看参数 →</p>
 </a>
 
-<a class="dhj-card" href="/products/mig-mag">
+<a class="dhj-card" href="@BASE@/products/mig-mag">
   <p class="t">二氧化碳气保焊机</p>
   <p class="d">效率高、成型好，适合中厚板批量焊接，是加工厂的主力机型。</p>
   <p class="m">查看参数 →</p>
 </a>
 
-<a class="dhj-card" href="/products/tig">
+<a class="dhj-card" href="@BASE@/products/tig">
   <p class="t">氩弧焊机（TIG）</p>
   <p class="d">焊缝美观、热输入可控，适合不锈钢、铝、薄板与打底焊。</p>
   <p class="m">查看参数 →</p>
 </a>
 
-<a class="dhj-card" href="/products/plasma-cutter">
+<a class="dhj-card" href="@BASE@/products/plasma-cutter">
   <p class="t">等离子切割机</p>
   <p class="d">切割碳钢、不锈钢、铝板，配合焊机形成下料—焊接完整链条。</p>
   <p class="m">查看参数 →</p>
 </a>
 
-<a class="dhj-card" href="/products/portable">
+<a class="dhj-card" href="@BASE@/products/portable">
   <p class="t">便携式家用焊机</p>
   <p class="d">220V 供电、体积小重量轻，适合家庭维修、装潢、农具修补。</p>
   <p class="m">查看参数 →</p>
 </a>
 
-<a class="dhj-card" href="/products/">
+<a class="dhj-card" href="@BASE@/products/">
   <p class="t">全部产品总览</p>
   <p class="d">按工艺、板厚、供电条件三个维度横向对比，快速定位型号。</p>
   <p class="m">进入总览 →</p>

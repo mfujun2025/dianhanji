@@ -21,6 +21,27 @@ function canonicalTags(pageData) {
   return [['link', { rel: 'canonical', href: SITE + '/' + p }]]
 }
 
+/**
+ * 把 markdown / HTML 里的 @BASE@ 占位符在构建时替换为真实 base 前缀。
+ *
+ * 背景：VitePress 只重写 markdown 语法链接（[文本](/path)），
+ * 对 markdown 中内嵌的 raw HTML（<a href="/products/xxx">）不做处理。
+ * 子路径部署时这些链接会指向站点根目录而 404。
+ *
+ * 在源码里写 href="@BASE@/products/xxx"，由本插件在内存中替换，
+ * 不修改磁盘上的源文件，本地 dev / 自有域名 / Pages 子路径三种场景都正确。
+ */
+function basePlaceholderPlugin(base: string) {
+  const prefix = base.replace(/\/+$/, '') // '/' → '' ; '/dianhanji/' → '/dianhanji'
+  return {
+    name: 'dhj-base-placeholder',
+    transform(code: string, id: string) {
+      if (!code.includes('@BASE@')) return null
+      return { code: code.replaceAll('@BASE@', prefix), map: null }
+    },
+  }
+}
+
 export default withMermaid(
   defineConfig({
     title: NAME,
@@ -28,6 +49,9 @@ export default withMermaid(
     lang: 'zh-CN',
     base: BASE,
     cleanUrls: true,
+    vite: {
+      plugins: [basePlaceholderPlugin(BASE)],
+    },
     sitemap: { hostname: SITE },
     transformHead: ({ pageData }) => canonicalTags(pageData),
     head: [

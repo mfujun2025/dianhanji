@@ -97,7 +97,8 @@ for (const g of groups) {
   }
   block += '<div class="dhj-cards">\n\n'
   for (const a of g.items) {
-    block += `<a class="dhj-card" href="/articles/${a.slug}">\n`
+    // 用 @BASE@ 占位符：子路径部署时由 vite 插件替换为真实前缀（见 config.mts）
+    block += `<a class="dhj-card" href="@BASE@/articles/${a.slug}">\n`
     block += `  <p class="t">${a.title}</p>\n`
     block += `  <p class="d">${a.desc}</p>\n`
     block += `  <p class="m">${a.date} · ${a.cat} · 约 ${a.words} 字 →</p>\n`
