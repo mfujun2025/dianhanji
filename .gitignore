@@ -1,0 +1,21 @@
+# 依赖
+node_modules/
+
+# VitePress 构建产物与缓存
+docs/.vitepress/dist/
+docs/.vitepress/dist2/
+docs/.vitepress/cache/
+docs/.vitepress/.temp/
+docs/.vitepress/temp/
+docs/.vitepress/*.timestamp-*.mjs
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+preview.log
+
+# 本地诊断残留
+_trash_*.mjs

@@ -1,0 +1,25 @@
+{
+  "name": "dianhanji-cn",
+  "version": "1.0.0",
+  "private": true,
+  "description": "电焊机.cn — 电焊机产品展示与技术内容站",
+  "scripts": {
+    "articles": "node _build-articles.mjs",
+    "sitemap": "node _gen-sitemap.mjs",
+    "build": "node _build-articles.mjs && node _build.mjs && node _gen-sitemap.mjs && node _sync-dist.mjs",
+    "dev": "vitepress dev",
+    "preview": "vitepress preview",
+    "verify": "node ../scripts/verify.mjs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0"
+  },
+  "dependencies": {
+    "mermaid": "^10.9.1",
+    "vitepress-plugin-mermaid": "^2.0.16",
+    "ws": "^8.22.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

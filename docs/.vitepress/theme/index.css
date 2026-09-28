@@ -1,0 +1,102 @@
+:root {
+  --vp-c-brand-1: #c0392b;
+  --vp-c-brand-2: #a93226;
+  --vp-c-brand-3: #d9534f;
+  --vp-c-brand-soft: rgba(192, 57, 43, 0.14);
+
+  --vp-button-brand-bg: #c0392b;
+  --vp-button-brand-hover-bg: #a93226;
+  --vp-button-brand-active-bg: #922b21;
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-hover-border: transparent;
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, #c0392b 20%, #e67e22 80%);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #c0392b60 30%, #e67e2260 70%);
+  --vp-home-hero-image-filter: blur(56px);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 产品/文章卡片网格 */
+.dhj-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 20px 0 28px;
+}
+
+.dhj-card {
+  display: block;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  background: var(--vp-c-bg-soft);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.dhj-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 6px 20px rgba(192, 57, 43, 0.12);
+  transform: translateY(-2px);
+}
+
+.dhj-card .t {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+  margin: 0 0 6px;
+}
+
+.dhj-card .d {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--vp-c-text-2);
+  margin: 0 0 10px;
+}
+
+.dhj-card .m {
+  font-size: 12.5px;
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+
+a.dhj-card {
+  text-decoration: none;
+}
+
+/* 参数规格表统一样式 */
+.vp-doc table {
+  display: table;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* 咨询引导区块 */
+.dhj-cta {
+  border-left: 4px solid var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  border-radius: 0 10px 10px 0;
+  padding: 16px 20px;
+  margin: 24px 0;
+}
+
+.dhj-cta strong {
+  color: var(--vp-c-brand-1);
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+  .dhj-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .dhj-card {
+    padding: 16px 14px;
+  }
+  .vp-doc h1 {
+    font-size: 26px;
+  }
+}

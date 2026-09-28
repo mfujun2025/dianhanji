@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+
+Sitemap: https://xn--nqv61tpnd.cn/sitemap.xml
