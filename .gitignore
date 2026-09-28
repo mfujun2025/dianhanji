@@ -4,6 +4,7 @@ node_modules/
 # VitePress 构建产物与缓存
 docs/.vitepress/dist/
 docs/.vitepress/dist2/
+docs/.vitepress/.out-*/
 docs/.vitepress/cache/
 docs/.vitepress/.temp/
 docs/.vitepress/temp/

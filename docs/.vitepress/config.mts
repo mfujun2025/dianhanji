@@ -5,6 +5,15 @@ const SITE = 'https://xn--nqv61tpnd.cn'
 const NAME = '电焊机.cn'
 const DESC = '电焊机.cn — 电焊机产品选型、技术参数与行业解决方案服务商'
 
+/**
+ * 部署路径前缀。
+ * - 绑定自有域名（电焊机.cn）时为空，站点挂根目录。
+ * - 走 GitHub Pages 默认地址 mfujun2025.github.io/dianhanji/ 时必须为 '/dianhanji/'，
+ *   否则 VitePress 会输出 /assets/... 这类根相对路径，在子路径下必然 404。
+ * CI 里通过环境变量 DEPLOY_BASE 注入，本地默认为空（对应自有域名）。
+ */
+const BASE = process.env.DEPLOY_BASE || '/'
+
 /** 为每个页面自动输出 <link rel="canonical">（VitePress transformHead 钩子） */
 function canonicalTags(pageData) {
   const rel = (pageData && pageData.relativePath) || 'index.md'
@@ -17,6 +26,7 @@ export default withMermaid(
     title: NAME,
     description: DESC,
     lang: 'zh-CN',
+    base: BASE,
     cleanUrls: true,
     sitemap: { hostname: SITE },
     transformHead: ({ pageData }) => canonicalTags(pageData),
@@ -25,7 +35,7 @@ export default withMermaid(
       ['meta', { name: 'keywords', content: '电焊机,逆变焊机,二保焊机,氩弧焊机,等离子切割机,焊接设备,电焊机厂家' }],
       ['meta', { name: 'author', content: NAME }],
       ['meta', { name: 'theme-color', content: '#C0392B' }],
-      ['link', { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
+      ['link', { rel: 'icon', href: BASE + 'favicon.svg', type: 'image/svg+xml' }],
       ['meta', { property: 'og:type', content: 'website' }],
       ['meta', { property: 'og:site_name', content: NAME }],
       ['meta', { property: 'og:locale', content: 'zh_CN' }],

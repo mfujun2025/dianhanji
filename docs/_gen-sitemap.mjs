@@ -5,8 +5,8 @@
  * 本机沙箱的删除守卫会让收尾步骤中断，导致 sitemap.xml 缺失。
  * 自建生成器同时带来一个好处：新增文章后 sitemap 自动包含，无需人工维护。
  *
- * 用法：node scripts/gen-sitemap.mjs [outDir]
- *   默认 outDir = docs/.vitepress/dist2（与 build.mjs 保持一致）
+ * 用法：node _gen-sitemap.mjs [outDir]
+ *   默认取 .vitepress 下最新的构建输出目录（.out-<timestamp> / dist2）
  *   环境变量 BUILD_OUT 可覆盖。
  */
 import fs from 'node:fs'
@@ -14,9 +14,28 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const ROOT = path.resolve(__dirname, '..')
-const DOCS = path.join(ROOT, 'docs')
-const OUT = process.argv[2] || process.env.BUILD_OUT || path.join(DOCS, '.vitepress', 'dist2')
+const DOCS = __dirname
+const VP = path.join(DOCS, '.vitepress')
+
+/** 定位最新构建输出目录 */
+function resolveOut() {
+  if (process.argv[2]) return path.resolve(process.argv[2])
+  if (process.env.BUILD_OUT) return path.resolve(process.env.BUILD_OUT)
+  const c = []
+  for (const e of fs.readdirSync(VP, { withFileTypes: true })) {
+    if (e.isDirectory() && (e.name === 'dist2' || e.name.startsWith('.out-'))) {
+      c.push(path.join(VP, e.name))
+    }
+  }
+  c.sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs)
+  return c[0]
+}
+
+const OUT = resolveOut()
+if (!OUT) {
+  console.error('[sitemap] 找不到构建产物目录，请先运行 node _build.mjs')
+  process.exit(1)
+}
 
 const SITE = 'https://xn--nqv61tpnd.cn'
 

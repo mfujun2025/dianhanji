@@ -18,16 +18,40 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const VP = path.join(__dirname, '.vitepress')
-const SRC = path.join(VP, 'dist2')
 const DST = path.join(VP, 'dist')
 
 const prune = process.argv.includes('--prune')
 const dry = process.argv.includes('--dry')
 
-if (!fs.existsSync(SRC)) {
-  console.error('[sync] 找不到构建产物', SRC, '—— 请先运行 node docs/_build.mjs')
+/**
+ * 定位构建产物目录：优先用 --src=<dir> / 环境变量 BUILD_OUT，
+ * 否则取 .vitepress 下最新的 .out-<timestamp> 目录（兼容旧的 dist2）。
+ */
+function resolveSrc() {
+  const cli = process.argv.find((a) => a.startsWith('--src='))
+  if (cli) return path.resolve(cli.slice(6))
+  if (process.env.BUILD_OUT) return path.resolve(process.env.BUILD_OUT)
+
+  const candidates = []
+  for (const e of fs.readdirSync(VP, { withFileTypes: true })) {
+    if (!e.isDirectory()) continue
+    if (e.name === 'dist2' || e.name.startsWith('.out-')) {
+      candidates.push(path.join(VP, e.name))
+    }
+  }
+  if (!candidates.length) return null
+  // 取修改时间最新的
+  candidates.sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs)
+  return candidates[0]
+}
+
+const SRC = resolveSrc()
+
+if (!SRC || !fs.existsSync(SRC)) {
+  console.error('[sync] 找不到构建产物，请先运行 node _build.mjs')
   process.exit(1)
 }
+console.log('[sync] 源目录 =', SRC)
 
 /** 递归列出目录下所有文件的相对路径 */
 function walk(dir, base = dir) {

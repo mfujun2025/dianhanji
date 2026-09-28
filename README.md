@@ -4,6 +4,8 @@
 
 - **域名**：电焊机.cn（punycode `xn--nqv61tpnd.cn`）
 - **联系邮箱**：mfujun@agent.qq.com
+- **云端预览**：https://9693f95a5df84f4a90d7d7a337d7c8cf.app.workbuddy.host
+  （预览服务不支持 `cleanUrls`，子页需带 `.html` 后缀）
 
 ## 站点结构
 
@@ -41,15 +43,34 @@ npm run verify     # 端到端验证（Edge 无头 + CDP，67 项断言）
 `npm run build` 依次执行四步：
 
 1. `_build-articles.mjs` — 扫描 `docs/articles/*.md` 的 frontmatter，重建文章索引卡片区块
-2. `_build.mjs` — VitePress Node API 构建到 `dist2`
+2. `_build.mjs` — VitePress Node API 构建到 `.vitepress/.out-<时间戳>/`
 3. `_gen-sitemap.mjs` — 生成 `sitemap.xml`（含全部页面 URL）
-4. `_sync-dist.mjs` — 把 `dist2` 产物同步到 `dist`
+4. `_sync-dist.mjs` — 把产物同步到 `dist`
 
-> 为什么分 `dist2` → `dist` 两步：VitePress 默认构建会先 `emptyDir` 清空输出目录，
-> 本机沙箱的批量删除守卫会拦截该操作导致构建中断。改为输出到全新目录 `dist2`
-> 再逐文件同步，可绕开该限制。同步默认只覆盖/新增、不删除（加 `--prune` 才清理）。
+> 为什么分成两步（临时输出目录 → `dist`）：VitePress 默认构建会先 `emptyDir` 清空输出目录，
+> 本机沙箱的批量删除守卫会拦截该操作导致构建中断。改为输出到**每次全新**的临时目录再逐文件同步，
+> 可绕开该限制。**注意临时目录必须是新的**——复用同一目录时，第二次构建清空它同样会被拦截。
+> 同步默认只覆盖/新增、不删除（加 `--prune` 才清理）。
 >
 > 同理，VitePress 内置 sitemap 生成位于构建收尾阶段，受上述中断影响，因此改为自建生成器。
+
+## 部署路径（base）——重要
+
+站点有两套部署地址，**资源路径前缀不同**，由环境变量 `DEPLOY_BASE` 控制：
+
+| 部署地址 | `DEPLOY_BASE` | 说明 |
+|---|---|---|
+| `mfujun2025.github.io/dianhanji/` | `/dianhanji/` | GitHub Pages 子路径，CI 中已自动设置 |
+| `电焊机.cn`（自有域名，根目录） | `/`（默认） | 绑定自定义域名后使用 |
+
+**若 `base` 与部署地址不匹配，页面 HTML 能打开但 JS/CSS 全部 404**（表现为表单无反应、
+Mermaid 不渲染、导航跳转失效），因为 VitePress 会输出 `/assets/...` 这类根相对路径。
+
+绑定自有域名后，把 `.github/workflows/deploy.yml` 里的 `DEPLOY_BASE` 改为 `/`（或删掉该环境变量），
+并把仓库 Settings → Pages 的 Custom domain 设为 `xn--nqv61tpnd.cn`、勾选 Enforce HTTPS。
+
+> `canonical` 与 `sitemap.xml` 始终写死自有域名 `https://xn--nqv61tpnd.cn`，
+> 与 `DEPLOY_BASE` 无关，因此 SEO 信号不会因走 Pages 预览地址而分散。
 
 ## 新增文章
 
