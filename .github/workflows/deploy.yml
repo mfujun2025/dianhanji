@@ -37,9 +37,14 @@ jobs:
       - name: Build site
         working-directory: docs
         env:
-          # GitHub Pages 子路径部署：资源与内链必须带 /dianhanji/ 前缀，否则线上 JS/CSS 全部 404。
-          # 绑定自有域名（电焊机.cn）后可把此值改为 "/" 或删除该环境变量。
-          DEPLOY_BASE: /dianhanji/
+          # 站点已绑定自有域名 电焊机.cn（Pages Custom domain 已生效），
+          # 内容挂在域名根目录，因此 base 必须为 "/"。
+          #
+          # ⚠️ 这里必须是 "/"，不能是 "/dianhanji/"：
+          #   设为 "/dianhanji/" 时资源路径会变成 https://xn--nqv61tpnd.cn/dianhanji/assets/...
+          #   而自定义域名下内容在根目录，该路径 404 → 页面只剩裸 HTML（无样式、无图标、表单失效）。
+          #   仅当「未绑域名、走 mfujun2025.github.io/dianhanji/ 子路径」时才需要改成 "/dianhanji/"。
+          DEPLOY_BASE: /
         run: |
           node _build-articles.mjs
           node _build.mjs

@@ -6,15 +6,17 @@
  * 用 curl 拉真实 HTML 做断言，更快也更可靠。
  *
  * 覆盖：
+ *   0. **CSS/JS 是否真的能加载**（最关键：路径前缀与部署地址不匹配时页面只剩裸 HTML）
  *   1. 所有页面 HTTP 200
- *   2. 资源路径前缀正确（子路径部署下不得出现根相对 /assets/...）
+ *   2. 资源路径前缀正确
  *   3. 每个页面引用的资源逐个 HEAD，确认 200
  *   4. 页面内链逐个 HEAD，确认 200（含 cleanUrls 语义）
  *   5. sitemap.xml / robots.txt 域名正确且 URL 可访问
  *   6. 关键内容存在（标题、邮箱、导航、表单、Mermaid 容器）
  *
  * 用法：node scripts/verify-online-curl.mjs [baseUrl]
- *   默认 baseUrl = https://mfujun2025.github.io/dianhanji
+ *   默认 baseUrl = https://xn--nqv61tpnd.cn （已绑定的自有域名）
+ *   走 Pages 子路径时传 https://mfujun2025.github.io/dianhanji
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -22,7 +24,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
-const BASE = (process.argv[2] || 'https://mfujun2025.github.io/dianhanji').replace(/\/$/, '')
+const BASE = (process.argv[2] || 'https://xn--nqv61tpnd.cn').replace(/\/$/, '')
 const ORIGIN = new URL(BASE).origin
 const SUBPATH = new URL(BASE).pathname.replace(/\/$/, '') // '' 或 '/dianhanji'
 const SITE = 'https://xn--nqv61tpnd.cn'
@@ -57,6 +59,41 @@ async function head(url) {
 console.log('\n线上验证（curl，无浏览器）')
 console.log('目标：' + BASE)
 console.log('='.repeat(62))
+
+// ---- 0. 最关键：CSS/JS 是否真的能加载（裸 HTML 检测）----
+// 这一项专门拦「页面能打开但样式全丢」的故障：
+// base 配置与部署地址不匹配时（如绑了自有域名却仍用 /dianhanji/ 前缀），
+// HTML 照常返回 200，但它引用的 CSS/JS 全部 404 → 用户看到的是浏览器默认样式的裸页面。
+console.log('\n--- 0. 样式与脚本能否加载（裸 HTML 检测）---')
+{
+  let html
+  try { html = (await get(BASE + '/')).text } catch { html = '' }
+  const cssRefs = [...(html || '').matchAll(/href="([^"]+\.css)"/g)].map((m) => m[1])
+  const jsRefs = [...(html || '').matchAll(/src="([^"]+\.js)"/g)].map((m) => m[1])
+
+  ok('首页引用了 CSS', cssRefs.length > 0, `${cssRefs.length} 个`)
+  ok('首页引用了 JS', jsRefs.length > 0, `${jsRefs.length} 个`)
+
+  const toAbs = (r) => (/^https?:/.test(r) ? r : ORIGIN + r)
+  const deadCss = []
+  for (const r of cssRefs) {
+    const st = await head(toAbs(r))
+    if (st !== 200) deadCss.push(`${r} → ${st}`)
+  }
+  const deadJs = []
+  for (const r of jsRefs) {
+    const st = await head(toAbs(r))
+    if (st !== 200) deadJs.push(`${r} → ${st}`)
+  }
+  ok(`首页 CSS 全部可加载（${cssRefs.length} 个）`, deadCss.length === 0, deadCss.slice(0, 2).join(', '))
+  ok(`首页 JS 全部可加载（${jsRefs.length} 个）`, deadJs.length === 0, deadJs.slice(0, 2).join(', '))
+
+  // 若绑定了自有域名，同时确认 Pages 的 CNAME 文件还在（否则下次部署会掉域名绑定）
+  if (new URL(BASE).hostname === 'xn--nqv61tpnd.cn') {
+    const st = await head(BASE + '/CNAME')
+    ok('CNAME 文件已随产物部署（防域名绑定被覆盖）', st === 200, `HTTP ${st}`)
+  }
+}
 
 // ---- 1. 页面可达性 + 基本内容 ----
 console.log('\n--- 1. 页面可达性与内容 ---')
