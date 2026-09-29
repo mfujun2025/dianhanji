@@ -20,3 +20,6 @@ preview.log
 
 # 本地诊断残留
 _trash_*.mjs
+_check_*.html
+.t.html
+.tmp-*.html
