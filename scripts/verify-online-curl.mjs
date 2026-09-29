@@ -109,33 +109,41 @@ for (const p of PAGES) {
   }
 }
 
-// ---- 2. 资源前缀正确性 ----
+// ---- 2. 资源路径前缀正确性（随部署模式变化）----
+// 根目录部署（自有域名 / 用户站点仓库）：资源应为 /assets/...
+// 子路径部署（github.io/<repo>/）：资源应为 /<repo>/assets/...
+// 判据：资源实际能 200 才算对；这里先做形式检查，真正的把关在第 0 节与第 4 节。
 console.log('\n--- 2. 资源路径前缀 ---')
 const allHtml = [...htmlCache.entries()]
-let badPrefix = 0
-let prefixed = 0
+let wrongPrefix = []
+let rightPrefix = 0
 for (const [p, h] of allHtml) {
-  // 找形如 src="/assets/..." 或 href="/assets|favicon..." 的根相对资源
-  const wrong = h.match(/(?:src|href)="\/(assets|favicon)[^"]*"/g) || []
-  if (wrong.length) { badPrefix += wrong.length; console.log(`   ${p}: ${wrong.slice(0,3).join(' ')}`) }
-  const good = h.match(new RegExp(`(?:src|href)="${SUBPATH}\\/(assets|favicon)[^"]*"`, 'g')) || []
-  prefixed += good.length
+  // 抓出所有引用（src/href 的路径部分），再筛出含 /assets/ 的
+  const refs = [...h.matchAll(/(?:src|href)="(\/[^"]+)"/g)].map((m) => m[1])
+  for (const r of refs) {
+    if (!r.includes('/assets/')) continue
+    const expected = (SUBPATH || '') + '/assets/'
+    if (r.startsWith(expected)) rightPrefix++
+    else wrongPrefix.push(`${p}: ${r}`)
+  }
 }
-ok('无根相对资源路径（/assets/...）', badPrefix === 0, badPrefix ? `${badPrefix} 处错误` : '')
-ok('资源路径带正确前缀', prefixed > 0, `${prefixed} 处`)
+const mode = SUBPATH ? `子路径 ${SUBPATH}` : '根目录（自有域名）'
+ok(`资源前缀与部署模式匹配（${mode}）`, wrongPrefix.length === 0,
+   wrongPrefix.length ? `${wrongPrefix.length} 处不符，例：${wrongPrefix[0]}` : `${rightPrefix} 处正确`)
 
 // ---- 3. 页面内链前缀 ----
 console.log('\n--- 3. 页面内链前缀 ---')
+// Cloudflare 等代理会往 HTML 注入自己的脚本/链接（如 /cdn-cgi/*），不是站内链接，必须排除
+const EXTERNAL_PREFIXES = ['/cdn-cgi/', '/assets/', '/favicon', '/BingSiteAuth', '/baidu_verify', '/CNAME']
 let badLinks = []
 for (const [p, h] of allHtml) {
-  // 站内根相对链接（排除 /assets、favicon 已在上面查过）
-  const links = [...h.matchAll(/(?:href)="(\/[^":#]*)/g)].map(m => m[1])
+  const links = [...h.matchAll(/(?:href)="(\/[^":#]*)/g)].map((m) => m[1])
   for (const l of links) {
-    if (l.startsWith('/assets') || l.startsWith('/favicon')) continue
+    if (EXTERNAL_PREFIXES.some((x) => l.startsWith(x))) continue
     if (SUBPATH && !l.startsWith(SUBPATH + '/') && l !== SUBPATH) badLinks.push(`${p} → ${l}`)
   }
 }
-ok('站内链接均带前缀', badLinks.length === 0,
+ok('站内链接前缀与部署模式匹配', badLinks.length === 0,
    badLinks.length ? `${badLinks.length} 处，例：${badLinks[0]}` : '')
 
 // ---- 4. 资源可访问性（逐个 GET） ----
@@ -157,7 +165,8 @@ const links = new Set()
 for (const [, h] of allHtml) {
   for (const m of h.matchAll(/href="(\/[^":#]+)/g)) {
     if (/\.(js|css|woff2|svg|xml|txt)$/.test(m[1])) continue
-    if (m[1].startsWith('/assets') || m[1].startsWith('/favicon')) continue
+    // 排除静态资源、验证文件，以及代理注入的路径（Cloudflare 邮件保护会插 /cdn-cgi/...）
+    if (EXTERNAL_PREFIXES.some((x) => m[1].startsWith(x))) continue
     links.add(m[1])
   }
 }
