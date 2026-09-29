@@ -154,7 +154,15 @@ for (const [, h] of allHtml) {
 }
 let assetFail = []
 for (const a of assets) {
-  const st = await head(ORIGIN + a)
+  // HEAD 在 Cloudflare/GitHub Pages 上对 chunk 偶尔不稳，落在小体积分块时会被误判
+  // 先用 HEAD，非 200 再用 GET 复核；两次都失败才算真失败
+  let st = await head(ORIGIN + a)
+  if (st !== 200) {
+    try {
+      const r = await fetch(ORIGIN + a)
+      st = r.status
+    } catch { /* 保留 HEAD 的状态码 */ }
+  }
   if (st !== 200) assetFail.push(`${a} (${st})`)
 }
 ok(`全部资源可访问（${assets.size} 个）`, assetFail.length === 0, assetFail.slice(0,3).join(', '))
@@ -244,8 +252,15 @@ for (const [label, p, expect] of [
 }
 {
   const { text } = await get(BASE + '/sitemap.xml')
-  const n = (text.match(/<loc>/g) || []).length
-  ok('sitemap 含 20 条 URL', n === 20, `${n} 条`)
+  const locs = [...text.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])
+  const n = locs.length
+  // 站点会持续加文章，条数只增不减；断言用「下限 + 去重 + 域名正确」而非硬编码具体数字
+  const uniq = new Set(locs).size
+  const wrongHost = locs.filter((l) => !l.startsWith(SITE)).length
+  const dup = locs.length !== uniq ? `，有 ${locs.length - uniq} 条重复` : ''
+  ok(`sitemap 条数合理且无重复（${n} 条）`,
+     n >= 20 && uniq === n && wrongHost === 0,
+     `${n} 条${dup}${wrongHost ? `，${wrongHost} 条域名不符` : ''}`)
 }
 
 // ---- 汇总 ----
