@@ -23,3 +23,6 @@ _trash_*.mjs
 _check_*.html
 .t.html
 .tmp-*.html
+
+# SEO 内容团队协作过程产物（brief/草稿/审查报告），不进仓库
+.seo-workspace/

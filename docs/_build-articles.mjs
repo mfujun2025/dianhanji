@@ -60,8 +60,14 @@ for (const f of files) {
     continue
   }
   const slug = f.replace(/\.md$/, '')
-  // 若正文没有 H1，说明已有标题行 —— 用 frontmatter 标题
-  const wc = text.replace(/```[\s\S]*?```/g, '').replace(/[#>*`|\-\s]/g, '').length
+  // 统计正文字数：去掉 frontmatter、代码块、markdown 标记与表格行，
+  // 再只数汉字。用「全角汉字数」而不是 String.length，
+  // 是因为后者会把数字/英文/标点都算进去（一篇 1700 汉字的稿子会被显示成 2600 字）。
+  const body = text
+    .replace(/^---[\s\S]*?---/, '')   // frontmatter
+    .replace(/```[\s\S]*?```/g, '')   // 代码块
+    .replace(/<!--[\s\S]*?-->/g, '')  // HTML 注释（配图占位）
+  const wc = (body.match(/[\u4e00-\u9fa5]/g) || []).length
   arts.push({
     file: f,
     slug,
